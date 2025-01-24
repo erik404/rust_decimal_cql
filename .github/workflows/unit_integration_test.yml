@@ -1,0 +1,34 @@
+name: Unit & Integration Tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+  SCYLLA_HOST: 127.0.0.1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      scylladb:
+        image: scylladb/scylla:latest
+        ports:
+          - 9042:9042
+        options: >-
+          --entrypoint /docker-entrypoint.py
+          --network-alias scylladb
+          -m 750M
+          --env SCYLLA_ARGS="--smp 1 --overprovisioned 1"
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --verbose
+      - name: Run Unit Tests
+        run: cargo test --verbose --lib
+      - name: Run Integration Tests
+        run: cargo test --verbose --test integration_test -- --test-threads=1

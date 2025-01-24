@@ -1,0 +1,35 @@
+[package]
+name = "rust_decimal_cql"
+version = "1.0.0"
+edition = "2021"
+authors = ["Erik-Jan van de Wal <erikfourofour@proton.me>"]
+description = "A library that wraps rust_decimal::Decimal and implements traits for integration with ScyllaDB's native DECIMAL column type."
+license = "MIT"
+repository = "https://github.com/erik404/rust_decimal_cql"
+homepage = "https://github.com/erik404/"
+documentation = "https://docs.rs/rust_decimal_cql"
+readme = "README.md"
+keywords = [
+    "decimal",
+    "financial",
+    "scylla",
+    "precision",
+    "serialization",
+]
+categories = [
+    "science",
+    "mathematics",
+    "data-structures",
+    "database",
+]
+
+[lib]
+name = "rust_decimal_cql"
+path = "src/lib.rs"
+
+[dependencies]
+rust_decimal = { version="^1.0.0"}
+scylla = "^0.15.0"
+
+[dev-dependencies]
+tokio = "1.43.0"
