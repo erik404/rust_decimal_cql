@@ -1,9 +1,11 @@
 use rust_decimal::Decimal;
 use rust_decimal_cql::DecimalCql;
-use scylla::{DeserializeRow, SerializeRow, Session, SessionBuilder};
+use scylla::{DeserializeRow, SerializeRow};
 
 use std::env;
 use std::str::FromStr;
+use scylla::client::session::Session;
+use scylla::client::session_builder::SessionBuilder;
 
 #[derive(SerializeRow, DeserializeRow, Debug)]
 struct Data {
