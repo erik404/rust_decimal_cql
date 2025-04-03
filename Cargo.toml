@@ -28,8 +28,8 @@ name = "rust_decimal_cql"
 path = "src/lib.rs"
 
 [dependencies]
-rust_decimal = { version="^1.0.0"}
-scylla = "^0.15.0"
+rust_decimal = { version="^1.37.1"}
+scylla = "^1.0.0"
 
 [dev-dependencies]
-tokio = "1.43.0"
+tokio = "1.44.1"
