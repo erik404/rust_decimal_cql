@@ -5,9 +5,10 @@ use rust_decimal::Decimal;
 use scylla::_macro_internal::{
     CellWriter, ColumnType, DeserializeValue, SerializeValue, WrittenCellProof,
 };
+use scylla::cluster::metadata::NativeType;
 use scylla::deserialize::{DeserializationError, FrameSlice, TypeCheckError};
-use scylla::frame::value::CqlDecimal;
 use scylla::serialize::SerializationError;
+use scylla::value::CqlDecimal;
 use std::ops::Deref;
 
 const SCALE_BYTES: usize = 4;
@@ -79,13 +80,13 @@ impl SerializeValue for DecimalCql {
 /// - `deserialize`: Converts the serialized `CqlDecimal` data into a `DecimalCql` with an inner `Decimal`
 ///
 /// # Errors
-/// - Returns `TypeCheckError` if the column type is not `ColumnType::Decimal`.
+/// - Returns `TypeCheckError` if the column type is not ` ColumnType::Decimal`.
 /// - Returns `DeserializationError` if the frame is empty or the data cannot be parsed.
 
 impl<'frame, 'metadata> DeserializeValue<'frame, 'metadata> for DecimalCql {
     fn type_check(typ: &ColumnType) -> Result<(), TypeCheckError> {
-        if !matches!(typ, ColumnType::Decimal) {
-            let typ_info: String = format!("Expected {:?}, got {:?}", ColumnType::Decimal, typ);
+        if !matches!(typ, ColumnType::Native(NativeType::Decimal)) {
+            let typ_info: String = format!("Expected {:?}, got {:?}", NativeType::Decimal, typ);
             return Err(TypeCheckError::new(DecimalCqlError::MismatchedType(
                 typ_info,
             )));
@@ -169,7 +170,9 @@ mod tests {
         let wrapper: DecimalCql = decimal.into();
         let mut buffer = Vec::new();
         let writer = CellWriter::new(&mut buffer);
-        wrapper.serialize(&ColumnType::Decimal, writer).unwrap();
+        wrapper
+            .serialize(&ColumnType::Native(NativeType::Decimal), writer)
+            .unwrap();
         assert_eq!(
             buffer, expected_bytes,
             "Buffer should match expected_bytes exactly"
@@ -178,7 +181,7 @@ mod tests {
 
     #[test]
     fn test_decimal_cql_no_frame() {
-        let result = DecimalCql::deserialize(&ColumnType::Decimal, None);
+        let result = DecimalCql::deserialize(&ColumnType::Native(NativeType::Decimal), None);
         assert!(
             result.is_err(),
             "Deserialization should fail if frame slice is None"
