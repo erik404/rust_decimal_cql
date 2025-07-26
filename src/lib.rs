@@ -14,7 +14,7 @@ use std::ops::Deref;
 const SCALE_BYTES: usize = 4;
 const PADDING_BYTES: usize = 16;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Deserialize, serde::Serialize)]
 pub struct DecimalCql(Decimal);
 
 impl From<Decimal> for DecimalCql {
